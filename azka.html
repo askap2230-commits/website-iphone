@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone 15 Pro | Intelligence Interface</title>
+    
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #000; --card: #161617; --text: #f5f5f7; 
+            --accent: #0071e3; --glass: rgba(22, 22, 23, 0.85);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'SF Pro Display', sans-serif; overflow-x: hidden; }
+
+        /* Navigation */
+        nav {
+            position: fixed; width: 100%; height: 50px; background: var(--glass);
+            backdrop-filter: blur(30px); z-index: 1000; display: flex;
+            justify-content: center; align-items: center; border-bottom: 0.5px solid #333;
+        }
+
+        /* Hero & Content */
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero h1 { font-size: clamp(50px, 12vw, 110px); background: linear-gradient(180deg, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .specs-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px; padding: 100px 10%; background: #000;
+        }
+        .card { background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid #222; transition: 0.4s; }
+        .card:hover { border-color: var(--accent); }
+
+        /* Animation Scroll */
+        .sticky-wrapper { height: 250vh; position: relative; }
+        .sticky-box { position: sticky; top: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .iphone-img { width: 320px; z-index: 10; transition: 0.1s linear; }
+
+        /* --- CHATBOT SYSTEM UI --- */
+        #chat-trigger {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: var(--text); color: #000; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; cursor: pointer; z-index: 2000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); font-size: 24px;
+        }
+
+        .chat-box {
+            position: fixed; bottom: 110px; right: 30px; width: 400px; height: 580px;
+            background: #111; border-radius: 28px; display: none; flex-direction: column;
+            border: 1px solid #333; z-index: 2000; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+        .chat-header { padding: 20px; background: #1c1c1e; border-bottom: 1px solid #333; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .msg { padding: 14px 18px; border-radius: 20px; font-size: 14.5px; line-height: 1.6; max-width: 85%; }
+        .msg.bot { background: #262629; align-self: flex-start; color: #fff; }
+        .msg.user { background: var(--accent); align-self: flex-end; color: #fff; }
+        .chat-footer { padding: 20px; background: #000; display: flex; gap: 10px; border-top: 1px solid #222; }
+        .chat-footer input { flex: 1; background: #222; border: none; padding: 12px; border-radius: 12px; color: #fff; outline: none; }
+
+        /* Admin Dashboard */
+        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; padding: 60px; }
+    </style>
+</head>
+<body>
+
+    <nav>iPhone 15 Pro</nav>
+
+    <section class="hero" data-aos="zoom-out" data-aos-duration="2000">
+        <h1>Titanium.</h1>
+        <p style="color: #86868b; font-size: 24px; margin-top: 20px;">Kuat. Ringan. Pro.</p>
+    </section>
+
+    <div class="specs-grid">
+        <div class="card" data-aos="fade-up">
+            <i class="fas fa-microchip" style="font-size: 40px; color: var(--accent);"></i>
+            <h2 style="margin: 20px 0;">A17 Pro Chip</h2>
+            <p style="color: #86868b;">Chip 3-nanometer pertama Apple yang mendefinisikan ulang batas performa seluler.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+            <i class="fas fa-camera" style="font-size: 40px; color: var(--accent);"></i>
+            <h2 style="margin: 20px 0;">Pro Camera System</h2>
+            <p style="color: #86868b;">Sensor 48MP dengan kontrol fokus dan kedalaman tingkat lanjut untuk kreativitas tanpa batas.</p>
+        </div>
+    </div>
+
+    <div class="sticky-wrapper">
+        <div class="sticky-box">
+            <img id="iphone" class="iphone-img" src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-bluetitanium?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1692845702130" alt="iPhone 15 Pro">
+        </div>
+    </div>
+
+    <div id="chat-trigger" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></div>
+    <div class="chat-box" id="chatWindow">
+        <div class="chat-header"> Apple Technical Intelligence</div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg bot">Halo! Saya Intelligence Assistant. Saya memiliki database lengkap mengenai iPhone 15 Pro. Apa yang ingin Anda eksplorasi hari ini?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="userInput" placeholder="Tanyakan detail teknis..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" style="background:var(--accent); border:none; color:#fff; padding:10px 15px; border-radius:10px; cursor:pointer;">Kirim</button>
+        </div>
+    </div>
+
+    <div style="position:fixed; bottom:20px; left:20px; opacity:0.1; cursor:pointer;" onclick="openAdmin()">⚙️</div>
+
+    <div id="adminPanel" class="admin-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>Central Dashboard</h1>
+            <button onclick="document.getElementById('adminPanel').style.display='none'" style="color:#fff; background:none; border:1px solid #333; padding:10px 20px;">Close</button>
+        </div>
+        <div style="margin-top:50px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+            <div style="background:#111; padding:30px; border-radius:20px;"><canvas id="myChart"></canvas></div>
+            <div style="background:#111; padding:30px; border-radius:20px;">
+                <h3>User Log</h3>
+                <div id="userLog" style="margin-top:20px; font-family:monospace; color:#0f0;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // 1. CHATBOT KNOWLEDGE DATABASE (Internal JSON System)
+        const chatDatabase = {
+            "iphone": "iPhone 15 Pro adalah smartphone tercanggih Apple saat ini, menggunakan material titanium kedirgantaraan yang ringan namun luar biasa kuat, serta menjadi iPhone pertama yang menggunakan chip 3-nanometer (A17 Pro).",
+            "chip": "Chip A17 Pro memiliki arsitektur 3nm dengan 19 miliar transistor. Dilengkapi GPU 6-core baru yang mendukung Hardware-Accelerated Ray Tracing, membuatnya mampu menjalankan game kualitas konsol seperti Resident Evil dan Death Stranding secara native.",
+            "kamera": "Sistem kamera Pro mencakup sensor utama 48MP dengan quad-pixel sensor. Mendukung pengambilan gambar HEIF 48MP dengan resolusi 4x lebih tinggi. Lensa Telefoto pada model Pro Max menggunakan desain tetraprisma untuk zoom optik hingga 5x.",
+            "titanium": "Material Titanium Kelas 5 yang digunakan memiliki rasio kekuatan-terhadap-berat tertinggi dari logam mana pun. Ini adalah paduan yang sama yang digunakan untuk wahana antariksa misi ke Mars. Hasilnya adalah iPhone model Pro teringan yang pernah ada.",
+            "usb": "Berkat chip A17 Pro, port USB-C kini mendukung USB 3, memberikan kecepatan transfer data hingga 10Gbps (20x lebih cepat dari USB 2). Anda bisa merekam video ProRes 4K pada 60 fps langsung ke penyimpanan eksternal.",
+            "layar": "Layar Super Retina XDR menggunakan teknologi Always-On dan ProMotion 120Hz. Tingkat kecerahan puncak mencapai 2000 nits, membuatnya sangat jelas bahkan di bawah sinar matahari langsung.",
+            "tombol": "Action Button menggantikan tombol geser hening. Anda bisa mengaturnya untuk akses cepat ke Kamera, Senter, Voice Memo, atau Shortcut kustom lainnya hanya dengan satu tekanan.",
+            "harga": "iPhone 15 Pro tersedia mulai dari Rp 18.999.000, sedangkan iPhone 15 Pro Max mulai dari Rp 22.999.000 di reseller resmi Indonesia.",
+            "baterai": "Efisiensi chip A17 Pro memberikan ketahanan luar biasa. iPhone 15 Pro Max mendukung pemutaran video hingga 29 jam, sementara 15 Pro hingga 23 jam."
+        };
+
+        // 2. CHATBOT LOGIC
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const body = document.getElementById('chatBody');
+            const text = input.value.trim().toLowerCase();
+            if(!text) return;
+
+            body.innerHTML += `<div class="msg user">${input.value}</div>`;
+            input.value = "";
+
+            // Bot Searching in Database
+            let reply = "Saya memahami pertanyaan Anda. Namun, untuk detail teknis spesifik tersebut, saya sarankan merujuk pada dokumentasi resmi Apple. Ingin tahu tentang Chip, Titanium, Kamera, atau Action Button?";
+            
+            for (let key in chatDatabase) {
+                if (text.includes(key)) {
+                    reply = chatDatabase[key];
+                    break;
+                }
+            }
+
+            setTimeout(() => {
+                body.innerHTML += `<div class="msg bot">${reply}</div>`;
+                body.scrollTop = body.scrollHeight;
+            }, 600);
+        }
+
+        // 3. SCROLL ANIMATION
+        window.addEventListener('scroll', () => {
+            const scroll = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            document.getElementById('iphone').style.transform = `scale(${1 + scroll * 2}) rotate(${scroll * 40}deg)`;
+        });
+
+        // 4. ADMIN & CHART
+        function openAdmin() {
+            if(prompt("Enter Intelligence Key:") === "apple123") {
+                document.getElementById('adminPanel').style.display = 'block';
+                renderAdmin();
+            }
+        }
+
+        function renderAdmin() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels: ['Jan', 'Feb', 'Mar'], datasets: [{ label: 'Analytics', data: [12, 19, 3], borderColor: '#0071e3' }] }
+            });
+        }
+    </script>
+</body>
+</html>
